@@ -63,6 +63,20 @@ const resolvers = {
               return res.status(400).json(err);
             }
         },
+
+        async removeBook({ user, params }, res) {
+            const updatedUser = await User.findOneAndUpdate(
+                { _id: user._id },
+                { $pull: { savedBooks: { bookId: params.bookId } } },
+                { new: true }
+            );
+            if (!updatedUser) {
+                return res
+                    .status(404)
+                    .json({ message: "Could not find user with this ID" });
+            }
+            return res.json(updatedUser);
+        },
     },
 };
 
